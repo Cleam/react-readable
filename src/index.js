@@ -5,7 +5,7 @@ import { BrowserRouter } from 'react-router-dom';
 // import reducer from './reducers';
 // import { Provider } from 'react-redux';
 // import logger from "redux-logger";
-// import './index.css';
+import './styles/index.css';
 import App from './components/App';
 import registerServiceWorker from './registerServiceWorker';
 
