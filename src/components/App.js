@@ -2,10 +2,16 @@ import React, { Component } from 'react';
 // import { connect } from 'react-redux';
 // import { serverUrl } from "../../config";
 
+const CTG_ALL = 'all';
+const VOTE_SCORE = 'voteScore';
+const TIMESTAMP = 'timestamp';
+
 class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      activeCategory: CTG_ALL,
+      sortBy: '',
       categories: [],
       posts: []
     };
@@ -26,7 +32,7 @@ class App extends Component {
         data = JSON.parse(data);
         // console.log('data::', data);
         data.categories &&
-          data.categories.unshift({ name: 'all', path: 'all', active: true });
+          data.categories.unshift({ name: CTG_ALL, path: CTG_ALL });
         this.setState({
           ...data
         });
@@ -34,8 +40,11 @@ class App extends Component {
       });
   }
 
-  getPosts() {
-    const url = 'http://localhost:3001/posts';
+  getPosts(category) {
+    const url =
+      category && category !== CTG_ALL
+        ? `http://localhost:3001/${category}/posts`
+        : 'http://localhost:3001/posts';
     fetch(url, { headers: { Authorization: 'whatever-you-want' } })
       .then(res => {
         return res.text();
@@ -48,14 +57,66 @@ class App extends Component {
           posts.push(item);
         });
         this.setState({
-          posts: posts
+          activeCategory: category || CTG_ALL,
+          posts: posts.sort(this.sortBy(this.state.sortBy))
         });
         console.log(this.state);
       });
   }
 
+  /**
+   *
+   * @param {String} ob 排序类别，按什么排序
+   */
+  changeSortBy(ob) {
+    this.setState({
+      sortBy: ob,
+      posts: this.state.posts.sort(this.sortBy(ob))
+    });
+  }
+
+  /**
+   * 时间戳转时间字符串（）
+   * @param {String} timestamp 时间戳
+   */
+  formatTime(timestamp) {
+    let date = new Date(timestamp);
+    let year = date.getFullYear();
+    let month = date.getMonth() + 1;
+    let day = date.getDay();
+    let h = date.getHours();
+    let m = date.getMinutes();
+    let s = date.getSeconds();
+    return year + '-' + month + '-' + day + ' ' + h + ':' + m + ':' + s;
+  }
+
+  /**
+   *
+   * @param {String} attr 排序属性
+   * @param {Boolean} rev ture: 升序；false：降序（默认）
+   */
+  sortBy(attr, rev) {
+    //第二个参数没有传递 默认升序排列
+    if (rev == undefined) {
+      rev = -1;
+    } else {
+      rev = rev ? -1 : 1;
+    }
+    return function(a, b) {
+      a = a[attr];
+      b = b[attr];
+      if (a < b) {
+        return rev * -1;
+      }
+      if (a > b) {
+        return rev * 1;
+      }
+      return 0;
+    };
+  }
+
   render() {
-    const { categories, posts } = this.state;
+    const { activeCategory, sortBy, categories, posts } = this.state;
 
     return (
       <div className="app">
@@ -65,9 +126,17 @@ class App extends Component {
             {categories.map(ctg => (
               <li
                 key={ctg.name}
-                className={ctg.active ? 'ctg-item active' : 'ctg-item'}
+                className={
+                  ctg.name === activeCategory ? 'ctg-item active' : 'ctg-item'
+                }
               >
-                <a onClick={console.log('onClick...')}>{ctg.name}</a>
+                <a
+                  onClick={() => {
+                    this.getPosts(ctg.name);
+                  }}
+                >
+                  {ctg.name}
+                </a>
               </li>
             ))}
           </ul>
@@ -75,15 +144,36 @@ class App extends Component {
         <div className="opt-wrap">
           <div className="opt">
             <ul className="opt-list">
-              <li className="opt-item active">
-                <a href="">
+              <li
+                className={
+                  sortBy === VOTE_SCORE ? 'opt-item active' : 'opt-item'
+                }
+              >
+                <a
+                  onClick={e => {
+                    e.preventDefault();
+                    this.changeSortBy(VOTE_SCORE);
+                  }}
+                >
                   VoteScore
                   <i className="icon down">↓</i>
                   {/* <i className="icon up">↑</i> */}
                 </a>
               </li>
-              <li className="opt-item">
-                <a href="">Time</a>
+              <li
+                className={
+                  sortBy === TIMESTAMP ? 'opt-item active' : 'opt-item'
+                }
+              >
+                <a
+                  onClick={e => {
+                    e.preventDefault();
+                    this.changeSortBy(TIMESTAMP);
+                  }}
+                >
+                  Time
+                  <i className="icon down">↓</i>
+                </a>
               </li>
             </ul>
             <div className="btn">
@@ -93,54 +183,19 @@ class App extends Component {
             </div>
           </div>
           <ul className="news-list">
-            <li className="news-item">
-              <a>
-                <h2 className="title">这是帖子的标题</h2>
-                <p className="desc">
-                  这是帖子的描述这是帖子的描述这是帖子的描述
-                </p>
-              </a>
-              <div className="news-info">
-                <span className="vote">5</span>
-                <span className="author">lizhigao</span>
-              </div>
-            </li>
-            <li className="news-item">
-              <a>
-                <h2 className="title">这是帖子的标题</h2>
-                <p className="desc">
-                  这是帖子的描述这是帖子的描述这是帖子的描述
-                </p>
-              </a>
-              <div className="news-info">
-                <span className="vote">5</span>
-                <span className="author">lizhigao</span>
-              </div>
-            </li>
-            <li className="news-item">
-              <a>
-                <h2 className="title">这是帖子的标题</h2>
-                <p className="desc">
-                  这是帖子的描述这是帖子的描述这是帖子的描述
-                </p>
-              </a>
-              <div className="news-info">
-                <span className="vote">5</span>
-                <span className="author">lizhigao</span>
-              </div>
-            </li>
-            <li className="news-item">
-              <a>
-                <h2 className="title">这是帖子的标题</h2>
-                <p className="desc">
-                  这是帖子的描述这是帖子的描述这是帖子的描述
-                </p>
-              </a>
-              <div className="news-info">
-                <span className="vote">5</span>
-                <span className="author">lizhigao</span>
-              </div>
-            </li>
+            {posts.map(p => (
+              <li key={p.id} className="news-item">
+                <a>
+                  <h2 className="title">{p.title}</h2>
+                  <p className="desc">{p.body}</p>
+                </a>
+                <div className="news-info">
+                  <span className="vote">{p.voteScore}</span>
+                  <span className="author">{p.author}</span>
+                  <span className="time">{this.formatTime(p.timestamp)}</span>
+                </div>
+              </li>
+            ))}
           </ul>
         </div>
       </div>
