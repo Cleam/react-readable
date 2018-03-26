@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 // import { connect } from 'react-redux';
 // import { serverUrl } from "../../config";
+import * as PostsAPI from '../utils/PostsAPI';
 
-const CTG_ALL = 'all';
 const VOTE_SCORE = 'voteScore';
 const TIMESTAMP = 'timestamp';
 
@@ -10,7 +10,8 @@ class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      activeCategory: CTG_ALL,
+      activeCategory: PostsAPI.CTG_ALL,
+      showModal: false,
       sortBy: '',
       categories: [],
       posts: []
@@ -18,51 +19,53 @@ class App extends Component {
   }
 
   componentDidMount() {
-    this.getCategories();
+    PostsAPI.getCategories().then(data => {
+      this.setState({
+        ...data
+      });
+    });
     this.getPosts();
   }
 
-  getCategories() {
-    const url = 'http://localhost:3001/categories';
-    fetch(url, { headers: { Authorization: 'whatever-you-want' } })
-      .then(res => {
-        return res.text();
-      })
-      .then(data => {
-        data = JSON.parse(data);
-        // console.log('data::', data);
-        data.categories &&
-          data.categories.unshift({ name: CTG_ALL, path: CTG_ALL });
-        this.setState({
-          ...data
-        });
-        // console.log(this.state);
+  getPosts = category => {
+    PostsAPI.getPosts(category).then(data => {
+      let posts = [];
+      data.map(item => {
+        posts.push(item);
       });
-  }
+      this.setState({
+        activeCategory: category || PostsAPI.CTG_ALL,
+        posts: posts.sort(this.sortBy(this.state.sortBy))
+      });
+      console.log(this.state);
+    });
+  };
 
-  getPosts(category) {
-    const url =
-      category && category !== CTG_ALL
-        ? `http://localhost:3001/${category}/posts`
-        : 'http://localhost:3001/posts';
-    fetch(url, { headers: { Authorization: 'whatever-you-want' } })
-      .then(res => {
-        return res.text();
-      })
-      .then(data => {
-        data = JSON.parse(data);
-        // console.log('data::', data);
-        let posts = [];
-        data.map((item, index) => {
-          posts.push(item);
-        });
-        this.setState({
-          activeCategory: category || CTG_ALL,
-          posts: posts.sort(this.sortBy(this.state.sortBy))
-        });
-        console.log(this.state);
-      });
-  }
+  addPost = () => {};
+
+  // addPost = () => {
+  //   var random = Math.random().toString(36).split('.')[1] + Math.random().toString(36).split('.')[1];
+  //   fetch(URL_PRE + '/posts?id=' + random, {
+  //     method: 'POST',
+  //     headers: {
+  // ...headers,
+  //       'Content-Type': 'application/json'
+  //     },
+  //     body: JSON.stringify({
+  //       id: random,
+  //       timestamp: Date.now(),
+  //       title: `This is a title ${random}`,
+  //       body: `This is body ${random}`,
+  //       owner: `lzg${random.substr(0, 6)}`,
+  //       author: `lzg${random.substr(0, 6)}`,
+  //       category: 'react'
+  //     })
+  //   }).then(res => {
+  //     return res.json();
+  //   }).then(res => {
+  //     console.log('res::', res);
+  //   })
+  // }
 
   /**
    *
@@ -97,7 +100,7 @@ class App extends Component {
    */
   sortBy(attr, rev) {
     //第二个参数没有传递 默认升序排列
-    if (rev == undefined) {
+    if (rev === undefined) {
       rev = -1;
     } else {
       rev = rev ? -1 : 1;
@@ -177,7 +180,14 @@ class App extends Component {
               </li>
             </ul>
             <div className="btn">
-              <a className="new" href="">
+              <a
+                className="new"
+                onClick={e => {
+                  this.setState({
+                    showModal: true
+                  });
+                }}
+              >
                 New
               </a>
             </div>
@@ -197,6 +207,10 @@ class App extends Component {
               </li>
             ))}
           </ul>
+        </div>
+        {/* modal */}
+        <div className="modal-wrap">
+          <form className="modal-form" />
         </div>
       </div>
     );
