@@ -37,7 +37,7 @@ export const getPosts = category => {
     .then(data => data);
 };
 
-export const addPosts = post => {
+export const addPosts = (post = {}) => {
   var random =
     Math.random()
       .toString(36)
@@ -45,17 +45,19 @@ export const addPosts = post => {
     Math.random()
       .toString(36)
       .split('.')[1];
-  if (!post) {
-    post = {
-      id: random,
-      timestamp: Date.now(),
-      title: `This is a title ${random}`,
-      body: `This is body ${random}`,
-      owner: `lzg${random.substr(0, 6)}`,
-      author: `lzg${random.substr(0, 6)}`,
-      category: 'react'
-    };
-  }
+  const postDefault = {
+    id: random,
+    timestamp: Date.now(),
+    title: `This is a title ${random}`,
+    body: `This is body ${random}`,
+    owner: `lzg${random.substr(0, 6)}`,
+    author: `lzg${random.substr(0, 6)}`,
+    category: 'react'
+  };
+  post = {
+    ...postDefault,
+    ...post
+  };
   return fetch(`${api}/posts`, {
     method: 'POST',
     headers: {

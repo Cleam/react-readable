@@ -5,6 +5,9 @@ body {
   padding: 0;
   font-family: sans-serif;
 }
+.show {
+  display: block !important;
+}
 
 .app {
   width: 1000px;
@@ -100,3 +103,62 @@ body {
   }
 }
 
+.modal-wrap {
+  display: none;
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 9;
+  background-color: rgba(0, 0, 0, 0.6);
+  .modal {
+    position: absolute;
+    background-color: #fff;
+    width: 400px;
+    // height: 300px;
+    left: 50%;
+    top: 20px;
+    margin-left: -200px;
+    border: 1px solid #e5e5e5;
+    box-shadow: 0 0 15px #333333;
+    padding: 15px;
+    .modal-title {
+      font-size: 20px;
+      color: #333;
+      text-align: center;
+    }
+    form {
+      font-size: 14px;
+      label {
+        display: block;
+        margin: 15px 0;
+      }
+      input,
+      textarea,
+      select {
+        border: 1px solid #999;
+        border-radius: 5px;
+      }
+      input,
+      textarea {
+        padding: 5px 10px;
+        width: 250px;
+      }
+      textarea {
+        height: 60px;
+      }
+      .btn-wrap {
+        text-align: center;
+        .btn {
+          width: 100px;
+          text-align: center;
+          background-color: #1296db;
+          color: #fff;
+          padding: 5px 0;
+          border-radius: 5px;
+        }
+      }
+    }
+  }
+}

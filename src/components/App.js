@@ -14,7 +14,13 @@ class App extends Component {
       showModal: false,
       sortBy: '',
       categories: [],
-      posts: []
+      posts: [],
+      form: {
+        title: '',
+        body: '',
+        category: 'react',
+        author: 'cleam'
+      }
     };
   }
 
@@ -41,31 +47,29 @@ class App extends Component {
     });
   };
 
-  addPost = () => {};
+  handleSubmit = e => {
+    e.preventDefault();
+    PostsAPI.addPosts(this.state.form).then(res => {
+      this.setState({
+        posts: [...this.state.posts, res],
+        showModal: false
+      });
+    });
 
-  // addPost = () => {
-  //   var random = Math.random().toString(36).split('.')[1] + Math.random().toString(36).split('.')[1];
-  //   fetch(URL_PRE + '/posts?id=' + random, {
-  //     method: 'POST',
-  //     headers: {
-  // ...headers,
-  //       'Content-Type': 'application/json'
-  //     },
-  //     body: JSON.stringify({
-  //       id: random,
-  //       timestamp: Date.now(),
-  //       title: `This is a title ${random}`,
-  //       body: `This is body ${random}`,
-  //       owner: `lzg${random.substr(0, 6)}`,
-  //       author: `lzg${random.substr(0, 6)}`,
-  //       category: 'react'
-  //     })
-  //   }).then(res => {
-  //     return res.json();
-  //   }).then(res => {
-  //     console.log('res::', res);
-  //   })
-  // }
+    console.log(this.state.form);
+  };
+
+  handleInputChange = e => {
+    const target = e.target;
+    const value = target.value;
+    const name = target.name;
+    this.setState({
+      form: {
+        ...this.state.form,
+        [name]: value
+      }
+    });
+  };
 
   /**
    *
@@ -186,6 +190,7 @@ class App extends Component {
                   this.setState({
                     showModal: true
                   });
+                  console.log(this.state);
                 }}
               >
                 New
@@ -209,8 +214,61 @@ class App extends Component {
           </ul>
         </div>
         {/* modal */}
-        <div className="modal-wrap">
-          <form className="modal-form" />
+        <div className={`modal-wrap ${this.state.showModal ? 'show' : ''}`}>
+          <div className="modal">
+            <h2 className="modal-title">New Post</h2>
+            <form className="modal-form" onSubmit={this.handleSubmit}>
+              <label className="category">
+                Category：
+                <select
+                  name="category"
+                  value={this.state.form.category}
+                  onChange={this.handleInputChange}
+                >
+                  {categories.map(
+                    ctg =>
+                      ctg.name !== PostsAPI.CTG_ALL && (
+                        <option key={ctg.name} value={ctg.name}>
+                          {ctg.name}
+                        </option>
+                      )
+                  )}
+                </select>
+              </label>
+              <label className="title">
+                Title：
+                <input
+                  name="title"
+                  type="text"
+                  value={this.state.form.title}
+                  onChange={this.handleInputChange}
+                />
+              </label>
+              <label className="body">
+                Body：
+                <textarea
+                  name="body"
+                  type="text"
+                  value={this.state.form.body}
+                  onChange={this.handleInputChange}
+                />
+              </label>
+              <label className="author">
+                Author：
+                <input
+                  name="author"
+                  type="text"
+                  value={this.state.form.author}
+                  onChange={this.handleInputChange}
+                />
+              </label>
+              <div className="btn-wrap">
+                <button className="btn" type="submit">
+                  Submit
+                </button>
+              </div>
+            </form>
+          </div>
         </div>
       </div>
     );
