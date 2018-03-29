@@ -19,7 +19,7 @@ class App extends Component {
         title: '',
         body: '',
         category: 'react',
-        author: 'cleam'
+        author: ''
       }
     };
   }
@@ -43,20 +43,38 @@ class App extends Component {
         activeCategory: category || PostsAPI.CTG_ALL,
         posts: posts.sort(this.sortBy(this.state.sortBy))
       });
-      console.log(this.state);
+      // console.log(this.state);
     });
+  };
+
+  addPost = e => {
+    let random =
+      Math.random()
+        .toString(36)
+        .split('.')[1] +
+      Math.random()
+        .toString(36)
+        .split('.')[1];
+    this.setState({
+      form: {
+        title: `This is a title ${random}`,
+        body: `This is a body ${random}`,
+        category: 'react',
+        author: `cleam${random.substr(0, 6)}`
+      },
+      showModal: true
+    });
+    // console.log(this.state);
   };
 
   handleSubmit = e => {
     e.preventDefault();
     PostsAPI.addPosts(this.state.form).then(res => {
+      this.getPosts(this.state.activeCategory);
       this.setState({
-        posts: [...this.state.posts, res],
         showModal: false
       });
     });
-
-    console.log(this.state.form);
   };
 
   handleInputChange = e => {
@@ -184,15 +202,7 @@ class App extends Component {
               </li>
             </ul>
             <div className="btn">
-              <a
-                className="new"
-                onClick={e => {
-                  this.setState({
-                    showModal: true
-                  });
-                  console.log(this.state);
-                }}
-              >
+              <a className="new" onClick={this.addPost}>
                 New
               </a>
             </div>
