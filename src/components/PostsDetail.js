@@ -1,61 +1,53 @@
 import React, { Component } from 'react';
-import { sortBy, formatTime } from '../utils';
-import * as PostsAPI from '../api/PostsAPI';
+import { formatTime } from '../utils';
+import * as api from '../api';
 
 class Detail extends Component {
   constructor(props) {
     super(props);
-    this.state = {};
+    this.state = {
+      post: {},
+      comments: []
+    };
   }
   componentDidMount() {
     const { id } = this.props.match.params;
-    console.log('id:', id);
-    PostsAPI.getPostsById(id).then(res => {
-      console.log('getPostsById:', res);
+    // console.log('id:', id);
+    api.getPostsById(id).then(post => {
+      // console.log('getPostsById:', post);
+      this.setState({
+        post
+      });
+      api.getCommentByPostId(post.id).then(comments => {
+        // console.log('getCommentByPostId::', comments);
+        this.setState({
+          comments
+        });
+      });
     });
   }
 
   render() {
+    // console.log(this.state);
+    const { post, comments } = this.state;
     return (
       <div className="posts-detail">
         <article className="article">
-          <h1 className="article-title">我是标题标题标题标题标题标题标题</h1>
-          <p className="article-content">
-            我是文章内容文章内容文章内容文章内容文章内容文章内容文章内容
-          </p>
+          <h1 className="article-title">{post.title}</h1>
+          <p className="article-content">{post.body}</p>
         </article>
         <div className="comment-wrap">
           <ul className="comment-list">
-            <li className="comment-item">
-              <p className="comment-content">
-                评论内容内容内容内容内容内容内容内容内容内容内容内容内容内容
-              </p>
-              <p className="comment-opt">
-                <span className="vote">3</span>
-                <span className="author">lzg</span>
-                <span className="time">2016-7-4 15:2:47</span>
-              </p>
-            </li>
-            <li className="comment-item">
-              <p className="comment-content">
-                评论内容内容内容内容内容内容内容内容内容内容内容内容内容内容
-              </p>
-              <p className="comment-opt">
-                <span className="vote">3</span>
-                <span className="author">lzg</span>
-                <span className="time">2016-7-4 15:2:47</span>
-              </p>
-            </li>
-            <li className="comment-item">
-              <p className="comment-content">
-                评论内容内容内容内容内容内容内容内容内容内容内容内容内容内容
-              </p>
-              <p className="comment-opt">
-                <span className="vote">3</span>
-                <span className="author">lzg</span>
-                <span className="time">2016-7-4 15:2:47</span>
-              </p>
-            </li>
+            {comments.map(comment => (
+              <li key={comment.id} className="comment-item">
+                <p className="comment-content">{comment.body}</p>
+                <p className="comment-opt">
+                  <span className="vote">{comment.voteScore}</span>
+                  <span className="author">{comment.author}</span>
+                  <span className="time">{formatTime(comment.timestamp)}</span>
+                </p>
+              </li>
+            ))}
           </ul>
         </div>
       </div>

@@ -13,8 +13,8 @@ const headers = {
   Authorization: token
 };
 
+// 类别
 export const CTG_ALL = 'all';
-
 export const getCategories = () =>
   fetch(`${api}/categories`, { headers })
     .then(res => res.json())
@@ -27,6 +27,7 @@ export const getCategories = () =>
       return data;
     });
 
+// 文章
 export const getPosts = category => {
   const url =
     category && category !== CTG_ALL
@@ -36,7 +37,6 @@ export const getPosts = category => {
     .then(res => res.json())
     .then(data => data);
 };
-
 export const addPosts = (post = {}) => {
   var random =
     Math.random()
@@ -67,10 +67,25 @@ export const addPosts = (post = {}) => {
     body: JSON.stringify(post)
   }).then(res => res.json());
 };
-
 export const getPostsById = id => {
   if (id) {
     return fetch(`${api}/posts/${id}`, {
+      method: 'GET',
+      headers: {
+        ...headers,
+        'Content-Type': 'application/json'
+      }
+    }).then(res => res.json());
+  }
+};
+
+// 评论
+/**
+ * 获取单个帖子的所有评论
+ */
+export const getCommentByPostId = id => {
+  if (id) {
+    return fetch(`${api}/posts/${id}/comments`, {
       method: 'GET',
       headers: {
         ...headers,

@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 // import { connect } from 'react-redux';
 // import { serverUrl } from "../../config";
 import { sortBy, formatTime } from '../utils';
-import * as PostsAPI from '../api/PostsAPI';
+import * as api from '../api';
 
 const VOTE_SCORE = 'voteScore';
 const TIMESTAMP = 'timestamp';
@@ -12,7 +12,7 @@ class PostsList extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      activeCategory: PostsAPI.CTG_ALL,
+      activeCategory: api.CTG_ALL,
       showModal: false,
       sortBy: '',
       categories: [],
@@ -27,7 +27,7 @@ class PostsList extends Component {
   }
 
   componentDidMount() {
-    PostsAPI.getCategories().then(data => {
+    api.getCategories().then(data => {
       this.setState({
         ...data
       });
@@ -36,13 +36,11 @@ class PostsList extends Component {
   }
 
   getPosts = category => {
-    PostsAPI.getPosts(category).then(data => {
+    api.getPosts(category).then(data => {
       let posts = [];
-      data.map(item => {
-        posts.push(item);
-      });
+      data.map(item => posts.push(item));
       this.setState({
-        activeCategory: category || PostsAPI.CTG_ALL,
+        activeCategory: category || api.CTG_ALL,
         posts: posts.sort(sortBy(this.state.sortBy))
       });
       // console.log(this.state);
@@ -71,7 +69,7 @@ class PostsList extends Component {
 
   handleSubmit = e => {
     e.preventDefault();
-    PostsAPI.addPosts(this.state.form).then(res => {
+    api.addPosts(this.state.form).then(res => {
       this.getPosts(this.state.activeCategory);
       this.setState({
         showModal: false
@@ -103,7 +101,14 @@ class PostsList extends Component {
   }
 
   render() {
-    const { activeCategory, sortBy, categories, posts } = this.state;
+    const {
+      activeCategory,
+      sortBy,
+      categories,
+      posts,
+      showModal,
+      form
+    } = this.state;
 
     return (
       <div className="posts-list">
@@ -186,7 +191,7 @@ class PostsList extends Component {
           </ul>
         </div>
         {/* modal */}
-        <div className={`modal-wrap ${this.state.showModal ? 'show' : ''}`}>
+        <div className={`modal-wrap ${showModal ? 'show' : ''}`}>
           <div className="modal">
             <h2 className="modal-title">New Post</h2>
             <form className="modal-form" onSubmit={this.handleSubmit}>
@@ -194,12 +199,12 @@ class PostsList extends Component {
                 Category：
                 <select
                   name="category"
-                  value={this.state.form.category}
+                  value={form.category}
                   onChange={this.handleInputChange}
                 >
                   {categories.map(
                     ctg =>
-                      ctg.name !== PostsAPI.CTG_ALL && (
+                      ctg.name !== api.CTG_ALL && (
                         <option key={ctg.name} value={ctg.name}>
                           {ctg.name}
                         </option>
@@ -212,7 +217,7 @@ class PostsList extends Component {
                 <input
                   name="title"
                   type="text"
-                  value={this.state.form.title}
+                  value={form.title}
                   onChange={this.handleInputChange}
                 />
               </label>
@@ -221,7 +226,7 @@ class PostsList extends Component {
                 <textarea
                   name="body"
                   type="text"
-                  value={this.state.form.body}
+                  value={form.body}
                   onChange={this.handleInputChange}
                 />
               </label>
@@ -230,7 +235,7 @@ class PostsList extends Component {
                 <input
                   name="author"
                   type="text"
-                  value={this.state.form.author}
+                  value={form.author}
                   onChange={this.handleInputChange}
                 />
               </label>
