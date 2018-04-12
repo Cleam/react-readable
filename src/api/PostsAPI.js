@@ -67,3 +67,15 @@ export const addPosts = (post = {}) => {
     body: JSON.stringify(post)
   }).then(res => res.json());
 };
+
+export const getPostsById = id => {
+  if (id) {
+    return fetch(`${api}/posts/${id}`, {
+      method: 'GET',
+      headers: {
+        ...headers,
+        'Content-Type': 'application/json'
+      }
+    }).then(res => res.json());
+  }
+};
