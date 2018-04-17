@@ -245,6 +245,10 @@ class PostsList extends Component {
                 </button>
               </div>
             </form>
+            <a
+              className="iconfont icon-shanchudelete30 close"
+              onClick={() => this.setState({ showModal: false })}
+            />
           </div>
         </div>
       </div>

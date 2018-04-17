@@ -1,12 +1,66 @@
 @import 'reset.scss';
 
 @font-face {
-  font-family: 'iconfont';  /* project id 618702 */
-  src: url('//at.alicdn.com/t/font_618702_4ly4ckz4q736jemi.eot');
-  src: url('//at.alicdn.com/t/font_618702_4ly4ckz4q736jemi.eot?#iefix') format('embedded-opentype'),
-  url('//at.alicdn.com/t/font_618702_4ly4ckz4q736jemi.woff') format('woff'),
-  url('//at.alicdn.com/t/font_618702_4ly4ckz4q736jemi.ttf') format('truetype'),
-  url('//at.alicdn.com/t/font_618702_4ly4ckz4q736jemi.svg#iconfont') format('svg');
+  font-family: 'iconfont';
+  src: url('//at.alicdn.com/t/font_618702_4ly4ckz4q736jemi.eot?t=1523113625807'); /* IE9*/
+  src: url('//at.alicdn.com/t/font_618702_4ly4ckz4q736jemi.eot?t=1523113625807#iefix')
+      format('embedded-opentype'),
+    /* IE6-IE8 */
+      url('data:application/x-font-woff;charset=utf-8;base64,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')
+      format('woff'),
+    url('//at.alicdn.com/t/font_618702_4ly4ckz4q736jemi.ttf?t=1523113625807')
+      format('truetype'),
+    /* chrome, firefox, opera, Safari, Android, iOS 4.2+*/
+      url('//at.alicdn.com/t/font_618702_4ly4ckz4q736jemi.svg?t=1523113625807#iconfont')
+      format('svg'); /* iOS 4.1- */
+}
+
+.iconfont {
+  font-family: 'iconfont' !important;
+  font-size: 16px;
+  font-style: normal;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.icon-iconset0413:before {
+  content: '\e724';
+}
+
+.icon-iconset0414:before {
+  content: '\e725';
+}
+
+.icon-shanchudelete30:before {
+  content: '\e70a';
+}
+
+.icon-delete:before {
+  content: '\e635';
+}
+
+.icon-zan:before {
+  content: '\e681';
+}
+
+.icon-new:before {
+  content: '\e606';
+}
+
+.icon-Edit:before {
+  content: '\e616';
+}
+
+.icon-down-:before {
+  content: '\e65b';
+}
+
+.icon-up-:before {
+  content: '\e676';
+}
+
+.icon--cai:before {
+  content: '\e60d';
 }
 
 body {
@@ -169,14 +223,27 @@ body {
         }
       }
     }
+    .close {
+      position: absolute;
+      right: 10px;
+      top: 10px;
+    }
   }
 }
 
 // 文章详情
 .posts-detail {
+  position: relative;
   width: 1000px;
   margin: 0 auto;
   // display: flex;
+  .back {
+    position: absolute;
+    right: 0;
+    top: 0;
+    font-size: 16px;
+    color: #1296db;
+  }
   .article {
     margin: 15px;
     padding: 15px;
@@ -213,6 +280,78 @@ body {
             margin-right: 15px;
           }
         }
+      }
+    }
+    .add-comment-wrap {
+      padding: 10px 0;
+      text-align: center;
+      .add-comment {
+        color: #1296db;
+        font-size: 12px;
+      }
+    }
+  }
+  .comment-modal-wrap {
+    display: none;
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 9;
+    background-color: rgba(0, 0, 0, 0.6);
+    .comment-modal {
+      position: absolute;
+      background-color: #fff;
+      width: 400px;
+      // height: 300px;
+      left: 50%;
+      top: 20px;
+      margin-left: -200px;
+      border: 1px solid #e5e5e5;
+      box-shadow: 0 0 15px #333333;
+      padding: 15px;
+      .modal-title {
+        font-size: 20px;
+        color: #333;
+        text-align: center;
+      }
+      form {
+        font-size: 14px;
+        label {
+          display: block;
+          margin: 15px 0;
+        }
+        input,
+        textarea,
+        select {
+          border: 1px solid #999;
+          border-radius: 5px;
+        }
+        input,
+        textarea {
+          padding: 5px 10px;
+          width: 250px;
+        }
+        textarea {
+          height: 60px;
+        }
+        .btn-wrap {
+          text-align: center;
+          .btn {
+            width: 100px;
+            text-align: center;
+            background-color: #1296db;
+            color: #fff;
+            padding: 5px 0;
+            border-radius: 5px;
+          }
+        }
+      }
+      .close {
+        position: absolute;
+        right: 10px;
+        top: 10px;
       }
     }
   }
