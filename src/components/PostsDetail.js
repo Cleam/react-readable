@@ -9,32 +9,66 @@ class Detail extends Component {
     this.state = {
       post: {},
       comments: [],
-      comment: {},
+      comment: {
+        parentId: '',
+        author: '',
+        body: ''
+      },
       showCommentModal: false
     };
   }
   componentDidMount() {
     const { id } = this.props.match.params;
-    // console.log('id:', id);
     api.getPostsById(id).then(post => {
-      // console.log('getPostsById:', post);
       this.setState({
         post
       });
-      api.getCommentByPostId(post.id).then(comments => {
-        // console.log('getCommentByPostId::', comments);
-        this.setState({
-          comments
-        });
-      });
+      this.updateComment();
     });
   }
 
-  addComment = e => {
-    e.preventDefault();
+  updateComment = () => {
+    api.getCommentByPostId(this.state.post.id).then(comments => {
+      this.setState({
+        comments
+      });
+    });
   };
 
-  handleInputChange = () => {};
+  addComment = e => {
+    e.preventDefault();
+    this.setState({
+      showCommentModal: true
+    });
+  };
+
+  handleCommentSubmit = e => {
+    e.preventDefault();
+    api
+      .addComment({
+        ...this.state.comment,
+        parentId: this.state.post.id
+      })
+      .then(res => {
+        console.table(res);
+        this.updateComment();
+        this.setState({
+          showCommentModal: false
+        });
+      });
+  };
+
+  handleInputChange = e => {
+    const target = e.target;
+    const value = target.value;
+    const name = target.name;
+    this.setState({
+      comment: {
+        ...this.state.comment,
+        [name]: value
+      }
+    });
+  };
 
   render() {
     // console.log(this.state);
@@ -69,21 +103,17 @@ class Detail extends Component {
             )}
           </ul>
           <div className="add-comment-wrap">
-            <a
-              className="add-comment"
-              onClick={() =>
-                this.setState({
-                  showCommentModal: true
-                })
-              }
-            >
+            <a className="add-comment" onClick={this.addComment}>
               Add Comment
             </a>
           </div>
         </div>
         <div className={`comment-modal-wrap ${showCommentModal ? 'show' : ''}`}>
           <div className="comment-modal">
-            <form className="comment-modal-form" onSubmit={this.addComment}>
+            <form
+              className="comment-modal-form"
+              onSubmit={this.handleCommentSubmit}
+            >
               <h2 className="modal-title">New comment</h2>
               <label className="author">
                 Author：
@@ -111,7 +141,9 @@ class Detail extends Component {
             </form>
             <a
               className="iconfont icon-shanchudelete30 close"
-              onClick={() => this.setState({ showCommentModal: false })}
+              onClick={() => {
+                this.setState({ showCommentModal: false });
+              }}
             />
           </div>
         </div>

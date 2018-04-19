@@ -45,18 +45,14 @@ export const addPosts = (post = {}) => {
     Math.random()
       .toString(36)
       .split('.')[1];
-  const postDefault = {
+  const data = {
     id: random,
     timestamp: Date.now(),
-    title: `This is a title ${random}`,
-    body: `This is body ${random}`,
-    owner: `lzg${random.substr(0, 6)}`,
-    author: `lzg${random.substr(0, 6)}`,
-    category: 'react'
-  };
-  post = {
-    ...postDefault,
-    ...post
+    title: post.title || `This is a title ${random}`,
+    body: post.body || `This is body ${random}`,
+    owner: post.author || `lzg${random.substr(0, 6)}`,
+    author: post.author || `lzg${random.substr(0, 6)}`,
+    category: post.category || 'react'
   };
   return fetch(`${api}/posts`, {
     method: 'POST',
@@ -64,7 +60,7 @@ export const addPosts = (post = {}) => {
       ...headers,
       'Content-Type': 'application/json'
     },
-    body: JSON.stringify(post)
+    body: JSON.stringify(data)
   }).then(res => res.json());
 };
 export const getPostsById = id => {
@@ -93,4 +89,30 @@ export const getCommentByPostId = id => {
       }
     }).then(res => res.json());
   }
+};
+
+export const addComment = (comment = {}) => {
+  var random =
+    Math.random()
+      .toString(36)
+      .split('.')[1] +
+    Math.random()
+      .toString(36)
+      .split('.')[1];
+  const data = {
+    id: random,
+    timestamp: Date.now(),
+    body: comment.body || `Random comment ${random}`,
+    owner: comment.author || `lzg${random.substr(0, 6)}`,
+    author: comment.author || `lzg${random.substr(0, 6)}`,
+    parentId: comment.parentId
+  };
+  return fetch(`${api}/comments`, {
+    method: 'POST',
+    headers: {
+      ...headers,
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(data)
+  }).then(res => res.json());
 };

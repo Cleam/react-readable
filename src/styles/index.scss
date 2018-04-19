@@ -142,7 +142,7 @@ body {
   .news-item {
     position: relative;
     margin-bottom: 15px;
-    padding-bottom: 15px;
+    padding-bottom: 30px;
     border-bottom: 1px solid #e5e5e5;
     h2 {
       margin-bottom: 10px;
@@ -156,7 +156,7 @@ body {
     > .news-info {
       position: absolute;
       right: 0;
-      bottom: 15px;
+      bottom: 10px;
       font-size: 12px;
       color: #999;
       > span:not(:last-child) {

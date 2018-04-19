@@ -12,7 +12,7 @@ class PostsList extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      activeCategory: api.CTG_ALL,
+      currentCategory: api.CTG_ALL,
       showModal: false,
       sortBy: '',
       categories: [],
@@ -40,7 +40,7 @@ class PostsList extends Component {
       let posts = [];
       data.map(item => posts.push(item));
       this.setState({
-        activeCategory: category || api.CTG_ALL,
+        currentCategory: category || api.CTG_ALL,
         posts: posts.sort(sortBy(this.state.sortBy))
       });
       // console.log(this.state);
@@ -56,12 +56,12 @@ class PostsList extends Component {
         .toString(36)
         .split('.')[1];
     this.setState({
-      form: {
-        title: `This is a title ${random}`,
-        body: `This is a body ${random}`,
-        category: 'react',
-        author: `cleam${random.substr(0, 6)}`
-      },
+      // form: {
+      //   title: `This is a title ${random}`,
+      //   body: `This is a body ${random}`,
+      //   category: 'react',
+      //   author: `cleam${random.substr(0, 6)}`
+      // },
       showModal: true
     });
     // console.log(this.state);
@@ -70,7 +70,7 @@ class PostsList extends Component {
   handleSubmit = e => {
     e.preventDefault();
     api.addPosts(this.state.form).then(res => {
-      this.getPosts(this.state.activeCategory);
+      this.getPosts(this.state.currentCategory);
       this.setState({
         showModal: false
       });
@@ -102,7 +102,7 @@ class PostsList extends Component {
 
   render() {
     const {
-      activeCategory,
+      currentCategory,
       sortBy,
       categories,
       posts,
@@ -119,7 +119,7 @@ class PostsList extends Component {
               <li
                 key={ctg.name}
                 className={
-                  ctg.name === activeCategory ? 'ctg-item active' : 'ctg-item'
+                  ctg.name === currentCategory ? 'ctg-item active' : 'ctg-item'
                 }
               >
                 <a
@@ -132,6 +132,10 @@ class PostsList extends Component {
               </li>
             ))}
           </ul>
+          {/* <Categories
+            categories={categories}
+            currentCategory={currentCategory}
+          /> */}
         </div>
         <div className="opt-wrap">
           <div className="opt">
